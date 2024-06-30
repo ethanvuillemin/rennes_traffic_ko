@@ -32,11 +32,14 @@
     </div>
 
     <script>
-
         var graphJSON = {{ graph_json | safe }};
-
-        Plotly.newPlot('scatter-plot', graphJSON.data, graphJSON.layout);
-        
+    
+        if (graphJSON && graphJSON.data && graphJSON.layout) {
+            Plotly.newPlot('scatter-plot', graphJSON.data, graphJSON.layout);
+        } else {
+            console.error('Erreur : données de graphique invalides');
+        }
     </script>
+    
 </body>
 </html>

@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request
 import plotly.express as px
 from keras.models import load_model
+
 import logging
-from datetime import datetime
+
 from src.get_data import GetData
 from src.utils import create_figure, prediction_from_model
-import flask_monitoringdashboard as dashboard
 
-# Importer le fichier de monitoring
-import monitoring
+import flask_monitoringdashboard as dashboard
 
 # Initialisation de l'application Flask
 app = Flask(__name__)
@@ -38,12 +37,6 @@ def index():
     Affiche un graphique interactif avec les données de trafic et les prédictions.
     """
     try:
-        # Mise à jour du compteur de requêtes
-        current_date = datetime.now().date()
-        if current_date not in monitoring.requests_count:
-            monitoring.requests_count[current_date] = 0
-        monitoring.requests_count[current_date] += 1
-
         if request.method == 'POST':
             # Si la méthode est POST, une heure est sélectionnée depuis le formulaire
             selected_hour = request.form['hour']
@@ -72,7 +65,7 @@ def index():
             fig_map = create_figure(data)
             graph_json = fig_map.to_json() if fig_map is not None else None
             # Logging des informations sur la requête GET
-            app.logger.info(f'GET request. Graph JSON')
+            app.logger.info(f'GET request. Graph JSON: {graph_json}')
             # Renvoi du template HTML avec le graphique
             return render_template('index.html', graph_json=graph_json)
     except Exception as e:
